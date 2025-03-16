@@ -1,11 +1,14 @@
 import React from 'react'
+import Nav from './Nav.jsx'
+import Fooder from './Fooder.jsx'
+import Home from './home.jsx'
 
 const App = () => {
   return (
-    <div>
-      <div className='container bg-red-500 mx-auto'  >
-        <h1>hello</h1>
-      </div>
+    <div className='bg-gray-100 min-h-screen'>
+      <Nav/>
+      <Home/>  
+      <Fooder />
     </div>
   )
 }

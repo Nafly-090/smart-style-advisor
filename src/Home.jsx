@@ -68,16 +68,8 @@ const ImageUploadForm = () => {
             const result = await model.generateContent([prompt, imagePart]);
             const response = await result.response;
             const text = response.text();
-            let responseArry = text.split("**");
-            let newResponse ;
-            for(let i=0; i< responseArry.length;i++){
-                if(i === 0 || i%2  !== 1 ){
-                    newResponse += responseArry[i];
-                }else{
-                    newResponse +="<b className='font-bold' >"+responseArry[i]+"</b>"
-                }
-            }
-            setAiResponse(newResponse);
+
+            setAiResponse(text);
         } catch (err) {
             console.error('Error:', err);
             setError('Failed to process the image. Please try again.');

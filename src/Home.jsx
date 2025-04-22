@@ -150,7 +150,9 @@ const ImageUploadForm = () => {
                 {/* AI Response */}
                 {aiResponse && (
                     <div className="mt-6 bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
-                        <h3 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Image Description:</h3>
+                        <h3 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white">
+                            Hello {name}, here is the Smart Advoice of your image:
+                        </h3>
                         <p className="text-gray-600 dark:text-gray-300">{aiResponse}</p>
                     </div>
                 )}

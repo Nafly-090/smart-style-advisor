@@ -1,45 +1,39 @@
 import React, { useState } from 'react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { getBase64 } from './unity/imageHelper'; // Ensure this path is correct
+import { getBase64 } from './unity/imageHelper';
 
 const ImageUploadForm = () => {
-    // State for name, image, AI response, loading, and error
     const [name, setName] = useState('');
     const [selectedImage, setSelectedImage] = useState(null);
-    const [imageFile, setImageFile] = useState(null); // Store the raw file for API
+    const [imageFile, setImageFile] = useState(null);
     const [aiResponse, setAiResponse] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    // Initialize Gemini API with your API key from .env
     const genAI = new GoogleGenerativeAI("AIzaSyCIorVdfyAN9AVTx4tdTqT0vQRfyErRhEk");
     const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
-    // Handle the name input change
     const handleNameChange = (event) => {
         setName(event.target.value);
     };
 
-    // Handle image file selection
     const handleImageChange = (event) => {
         const file = event.target.files[0];
         if (file) {
-            setImageFile(file); // Store the raw file for API
+            setImageFile(file);
             const reader = new FileReader();
             reader.onloadend = () => {
-                setSelectedImage(reader.result); // For preview
+                setSelectedImage(reader.result);
             };
             reader.readAsDataURL(file);
-            setAiResponse(''); // Clear previous response
+            setAiResponse('');
             setError('');
         }
     };
 
-    // Handle form submission
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        // Log name and image for debugging
         console.log("Name:", name);
         console.log("Image:", selectedImage);
 
@@ -52,23 +46,17 @@ const ImageUploadForm = () => {
         setError('');
 
         try {
-            // Convert image to Base64 for the API
             const base64Image = await getBase64(imageFile);
-
-            // Prepare the prompt and image data for Gemini API
             const prompt = 'Describe the image';
             const imagePart = {
                 inlineData: {
                     data: base64Image,
-                    mimeType: imageFile.type, // e.g., 'image/jpeg'
+                    mimeType: imageFile.type,
                 },
             };
-
-            // Send request to Gemini API
             const result = await model.generateContent([prompt, imagePart]);
             const response = await result.response;
             const text = response.text();
-
             setAiResponse(text);
         } catch (err) {
             console.error('Error:', err);
@@ -105,8 +93,8 @@ const ImageUploadForm = () => {
         });
 
         return paragraphs;
-
     };
+
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
             <div className="w-full max-w-lg">
@@ -118,7 +106,7 @@ const ImageUploadForm = () => {
 
                     {/* Image Preview Area */}
                     <div className="mb-4">
-                        <label className="block text-gray-700  dark:text-gray-300 mb-2">Click to Choose Image</label>
+                        <label className="block text-gray-700 dark:text-gray-300 mb-2">Click to Choose Image</label>
                         <input
                             type="file"
                             accept="image/*"
@@ -129,8 +117,9 @@ const ImageUploadForm = () => {
                         />
                         <div
                             onClick={() => document.getElementById('image-upload').click()}
-                            className={`w-full h-48 border-dashed border-2 p-4 flex items-center justify-center cursor-pointer ${selectedImage ? '' : 'bg-gray-100 dark:bg-gray-700'
-                                } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            className={`w-full h-48 border-dashed border-2 p-4 flex items-center justify-center cursor-pointer ${
+                                selectedImage ? '' : 'bg-gray-100 dark:bg-gray-700'
+                            } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                         >
                             {selectedImage ? (
                                 <img
@@ -161,8 +150,9 @@ const ImageUploadForm = () => {
                     {/* Submit Button */}
                     <button
                         type="submit"
-                        className={`w-full py-2 px-4 rounded transition ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
-                            } text-white`}
+                        className={`w-full py-2 px-4 rounded transition ${
+                            loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+                        } text-white`}
                         disabled={loading}
                     >
                         {loading ? 'Processing...' : 'Submit'}
@@ -174,13 +164,15 @@ const ImageUploadForm = () => {
                     )}
                 </form>
 
-                {/* AI Response */}
+                {/* AI Response with Name */}
                 {aiResponse && (
                     <div className="mt-6 bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
-                        <h3 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white">
-                            Hello {name}, here is the Smart Advoice of your image:
+                        <h3 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">
+                            Hello {name}, here is the Smart Advice of your image:
                         </h3>
-                        <p className="text-gray-600 dark:text-gray-300">{formatResponse(aiResponse)}</p>
+                        <div className="text-gray-600 dark:text-gray-300">
+                            {formatResponse(aiResponse)}
+                        </div>
                     </div>
                 )}
             </div>
@@ -189,3 +181,5 @@ const ImageUploadForm = () => {
 };
 
 export default ImageUploadForm;
+
+

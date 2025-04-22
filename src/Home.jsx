@@ -78,6 +78,35 @@ const ImageUploadForm = () => {
         }
     };
 
+    // Function to format the AI response with new lines and bold text
+    const formatResponse = (text) => {
+        // Split the text into paragraphs based on double newlines
+        const paragraphs = text.split('\n\n').map((paragraph, index) => {
+            // Split each paragraph into lines based on single newlines
+            const lines = paragraph.split('\n').map((line, lineIndex) => {
+                // Handle bold text (e.g., * **The Men:**)
+                const formattedLine = line.replace(/\* \*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                // Handle bullet points (e.g., * **The Men:** or * text)
+                if (line.startsWith('* ')) {
+                    return (
+                        <li key={`${index}-${lineIndex}`} className="ml-4">
+                            <span dangerouslySetInnerHTML={{ __html: formattedLine.replace('* ', '') }} />
+                        </li>
+                    );
+                }
+                return (
+                    <p key={`${index}-${lineIndex}`} className="mb-2">
+                        <span dangerouslySetInnerHTML={{ __html: formattedLine }} />
+                    </p>
+                );
+            });
+
+            return lines;
+        });
+
+        return paragraphs;
+
+    };
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
             <div className="w-full max-w-lg">
@@ -89,7 +118,7 @@ const ImageUploadForm = () => {
 
                     {/* Image Preview Area */}
                     <div className="mb-4">
-                        <label  className="block text-gray-700  dark:text-gray-300 mb-2">Click to Choose Image</label>
+                        <label className="block text-gray-700  dark:text-gray-300 mb-2">Click to Choose Image</label>
                         <input
                             type="file"
                             accept="image/*"
@@ -100,9 +129,8 @@ const ImageUploadForm = () => {
                         />
                         <div
                             onClick={() => document.getElementById('image-upload').click()}
-                            className={`w-full h-48 border-dashed border-2 p-4 flex items-center justify-center cursor-pointer ${
-                                selectedImage ? '' : 'bg-gray-100 dark:bg-gray-700'
-                            } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            className={`w-full h-48 border-dashed border-2 p-4 flex items-center justify-center cursor-pointer ${selectedImage ? '' : 'bg-gray-100 dark:bg-gray-700'
+                                } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                         >
                             {selectedImage ? (
                                 <img
@@ -133,9 +161,8 @@ const ImageUploadForm = () => {
                     {/* Submit Button */}
                     <button
                         type="submit"
-                        className={`w-full py-2 px-4 rounded transition ${
-                            loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
-                        } text-white`}
+                        className={`w-full py-2 px-4 rounded transition ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+                            } text-white`}
                         disabled={loading}
                     >
                         {loading ? 'Processing...' : 'Submit'}
@@ -153,7 +180,7 @@ const ImageUploadForm = () => {
                         <h3 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white">
                             Hello {name}, here is the Smart Advoice of your image:
                         </h3>
-                        <p className="text-gray-600 dark:text-gray-300">{aiResponse}</p>
+                        <p className="text-gray-600 dark:text-gray-300">{formatResponse(aiResponse)}</p>
                     </div>
                 )}
             </div>

@@ -1,7 +1,8 @@
 import React from 'react'
 import Nav from './Nav.jsx'
 import Fooder from './Fooder.jsx'
-import Home from './home.jsx'
+import Home from './Home.jsx'
+import ImageUpload from './components/ImageUpload.jsx'
 
 const App = () => {
   return (

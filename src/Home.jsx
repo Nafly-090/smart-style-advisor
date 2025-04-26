@@ -31,40 +31,51 @@ const ImageUploadForm = () => {
         }
     };
 
+
+
+
     const handleSubmit = async (event) => {
         event.preventDefault();
-
-        console.log("Name:", name);
-        console.log("Image:", selectedImage);
-
+      
         if (!imageFile) {
-            setError('Please upload an image.');
-            return;
+          setError('Please upload an image.');
+          return;
         }
-
+      
         setLoading(true);
         setError('');
-
+      
         try {
-            const base64Image = await getBase64(imageFile);
-            const prompt = 'Describe the image';
-            const imagePart = {
-                inlineData: {
-                    data: base64Image,
-                    mimeType: imageFile.type,
-                },
-            };
-            const result = await model.generateContent([prompt, imagePart]);
-            const response = await result.response;
-            const text = response.text();
-            setAiResponse(text);
+          const base64Image = await getBase64(imageFile);
+          const prompt = 'Given a clear image of a person, analyze their facial features, face shape, and skin tone to provide smart and personalized style advice...';
+          const imagePart = {
+            inlineData: {
+              data: base64Image,
+              mimeType: imageFile.type,
+            },
+          };
+          const result = await model.generateContent([prompt, imagePart]);
+          const response = await result.response;
+          const text = response.text();
+          setAiResponse(text);
+      
+          // Save to history
+          const history = JSON.parse(localStorage.getItem('smartAdvisorHistory') || '[]');
+          const newEntry = {
+            name,
+            image: selectedImage, // Store base64 image
+            response: text,
+            timestamp: new Date().toISOString(),
+          };
+          history.unshift(newEntry); // Add to the beginning
+          localStorage.setItem('smartAdvisorHistory', JSON.stringify(history.slice(0, 10))); // Limit to 10 entries
         } catch (err) {
-            console.error('Error:', err);
-            setError('Failed to process the image. Please try again.');
+          console.error('Error:', err);
+          setError('Failed to process the image. Please try again.');
         } finally {
-            setLoading(false);
+          setLoading(false);
         }
-    };
+      };
 
     // Function to format the AI response with new lines and bold text
     const formatResponse = (text) => {
@@ -117,9 +128,8 @@ const ImageUploadForm = () => {
                         />
                         <div
                             onClick={() => document.getElementById('image-upload').click()}
-                            className={`w-full h-48 border-dashed border-2 p-4 flex items-center justify-center cursor-pointer ${
-                                selectedImage ? '' : 'bg-gray-100 dark:bg-gray-700'
-                            } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            className={`w-full h-48 border-dashed border-2 p-4 flex items-center justify-center cursor-pointer ${selectedImage ? '' : 'bg-gray-100 dark:bg-gray-700'
+                                } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                         >
                             {selectedImage ? (
                                 <img
@@ -150,9 +160,8 @@ const ImageUploadForm = () => {
                     {/* Submit Button */}
                     <button
                         type="submit"
-                        className={`w-full py-2 px-4 rounded transition ${
-                            loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
-                        } text-white`}
+                        className={`w-full py-2 px-4 rounded transition ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+                            } text-white`}
                         disabled={loading}
                     >
                         {loading ? 'Processing...' : 'Submit'}

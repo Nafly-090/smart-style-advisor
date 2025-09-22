@@ -14,7 +14,7 @@
     "@google/generative-ai": "^0.24.0",
     "@tailwindcss/vite": "^4.0.14",
     "dompurify": "^3.2.5",
-    "dotenv": "^16.5.0",
+    "dotenv": "^16.6.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.5.2",

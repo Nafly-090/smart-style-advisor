@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import DOMPurify from 'dompurify';
 import { getBase64 } from './unity/imageHelper';
+import userkey from "./key";
 
 const Home = () => {
   const [name, setName] = useState('');
@@ -11,7 +12,7 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const genAI = new GoogleGenerativeAI("AIzaSyCIorVdfyAN9AVTx4tdTqT0vQRfyErRhEk");
+  const genAI = new GoogleGenerativeAI(userkey);
   const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
   const handleNameChange = (event) => {
